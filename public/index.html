@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Node.js Website Crawler</title>
+</head>
+<body>
+    <h1>Website Crawler (Express.js)</h1>
+    <input type="text" id="urlInput" placeholder="Enter website URL" size="50">
+    <button onclick="crawl()">Crawl</button>
+    <ul id="result"></ul>
+
+    <script>
+        async function crawl() {
+            const url = document.getElementById("urlInput").value;
+            const res = await fetch(`/crawl?url=${encodeURIComponent(url)}`);
+            const links = await res.json();
+
+            const result = document.getElementById("result");
+            result.innerHTML = "";
+
+            if (Array.isArray(links)) {
+                links.forEach(link => {
+                    const li = document.createElement("li");
+                    li.textContent = link;
+                    result.appendChild(li);
+                });
+            } else {
+                result.innerHTML = "<li>Error crawling website</li>";
+            }
+        }
+    </script>
+</body>
+</html>
+
