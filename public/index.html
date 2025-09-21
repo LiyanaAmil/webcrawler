@@ -1,121 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Website Link Crawler</title>
-  <style>
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #ffe8e8, #fff7d1);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .container {
-      background: #fff;
-      padding: 30px 40px;
-      border-radius: 16px;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.1);
-      text-align: center;
-      width: 500px;
-      border: 2px solid #ffe0e0;
-    }
-    h1 {
-      margin-bottom: 20px;
-      color: #444;
-      font-size: 24px;
-    }
-    input[type=text] {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #f8c8d8;
-      border-radius: 10px;
-      margin-bottom: 15px;
-      font-size: 15px;
-      background: #fffafc;
-    }
-    input[type=text]:focus {
-      outline: none;
-      border-color: #ffafcc;
-      box-shadow: 0 0 6px rgba(255, 175, 204, 0.6);
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background: #ffd166;
-      color: #333;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.1s;
-    }
-    button:hover {
-      background: #ffb347;
-      transform: scale(1.03);
-    }
-    #results {
-      margin-top: 20px;
-      text-align: left;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 8px;
-      border-bottom: 1px solid #eee;
-    }
-    th {
-      background: #fff0f6;
-      color: #333;
-    }
-  </style>
+    <title>Node.js Website Crawler</title>
 </head>
 <body>
-  <div class="container">
-    <h1>🔗 Website Link Crawler</h1>
-    <form id="crawlForm">
-      <input type="text" id="urlInput" placeholder="Enter website URL (e.g. https://example.com)" required>
-      <button type="submit">Crawl Website</button>
-    </form>
-    <div id="results"></div>
-  </div>
+    <h1>Website Crawler (Express.js)</h1>
+    <input type="text" id="urlInput" placeholder="Enter website URL" size="50">
+    <button onclick="crawl()">Crawl</button>
+    <ul id="result"></ul>
 
-  <script>
-    document.getElementById("crawlForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const url = document.getElementById("urlInput").value;
-      const resultsDiv = document.getElementById("results");
-      resultsDiv.innerHTML = "<p>⏳ Crawling...</p>";
+    <script>
+        async function crawl() {
+            const url = document.getElementById("urlInput").value;
+            const res = await fetch(`/crawl?url=${encodeURIComponent(url)}`);
+            const links = await res.json();
 
-      try {
-        const res = await fetch("http://103.209.158.211:30000/crawl?url=" + encodeURIComponent(url));
-        if (!res.ok) throw new Error("Failed to fetch data");
-        const data = await res.json();
+            const result = document.getElementById("result");
+            result.innerHTML = "";
 
-        if (data.length === 0) {
-          resultsDiv.innerHTML = "<p>No links found.</p>";
-          return;
+            if (Array.isArray(links)) {
+                links.forEach(link => {
+                    const li = document.createElement("li");
+                    li.textContent = link;
+                    result.appendChild(li);
+                });
+            } else {
+                result.innerHTML = "<li>Error crawling website</li>";
+            }
         }
-
-        let table = "<table><tr><th>URL</th><th>Title</th></tr>";
-        data.forEach(item => {
-          table += `<tr>
-                      <td><a href="${item}" target="_blank">${item}</a></td>
-                      <td>${item.Title || "—"}</td>
-                    </tr>`;
-        });
-        table += "</table>";
-        resultsDiv.innerHTML = table;
-      } catch (err) {
-        resultsDiv.innerHTML = "<p style='color:red;'>❌ Error: " + err.message + "</p>";
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>
