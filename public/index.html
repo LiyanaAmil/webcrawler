@@ -94,7 +94,7 @@
       resultsDiv.innerHTML = "<p>⏳ Crawling...</p>";
 
       try {
-        const res = await fetch("http://localhost:8080/api/crawl?url=" + encodeURIComponent(url));
+        const res = await fetch("http://103.209.158.211:30000/api/crawl?url=" + encodeURIComponent(url));
         if (!res.ok) throw new Error("Failed to fetch data");
         const data = await res.json();
 
