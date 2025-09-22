@@ -129,7 +129,7 @@
         table += "<table><tr><th>URL</th></tr>";
         data.forEach(item => {
           table += `<tr>
-                      <td><a href="${item}" target="_blank">${item}</a></td>
+                      <td><a href="${url}${item}" target="_blank">${url}${item}</a></td>
                     </tr>`;
         });
         table += "</table>";
