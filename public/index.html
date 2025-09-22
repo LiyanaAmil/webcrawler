@@ -128,8 +128,11 @@
         let table = `<div class="summary">Found ${data.length} links</div>`;
         table += "<table><tr><th>URL</th></tr>";
         data.forEach(item => {
+          const isAbsoluteUrl = /^(https?:)?\/\//.test(item);
+          const href = isAbsoluteUrl ? item : url + item;
+          const displayText = isAbsoluteUrl ? item : url + item;
           table += `<tr>
-                      <td><a href="${url}${item}" target="_blank">${url}${item}</a></td>
+                      <td><a href="${href}" target="_blank">${displayText}</a></td>
                     </tr>`;
         });
         table += "</table>";
